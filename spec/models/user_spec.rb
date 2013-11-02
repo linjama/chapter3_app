@@ -12,6 +12,7 @@ describe User do
   it { should respond_to(:name) }
   it { should respond_to(:email) }
   it { should respond_to(:password_digest) }
+  it { should respond_to(:authenticate) }
   it { should be_valid }
   
   describe "when name is not present"  do
@@ -19,26 +20,13 @@ describe User do
     it { should_not be_valid }
   end
   
-  describe "when email is not present"  do
-    before { @user.email = " " }
-    it { should_not be_valid }
-  end
-  
-  describe "when password is not present" do
-    before do
-      @user.password = " "
-      @user.password_confirmation = " "
-    end
-    it { should_not be_valid }
-  end
-  
-  describe "when password does not match confirmation" do
-    before { @user.password_confirmation = "mismatch" }
-    it { should_not be_valid }
-  end
-  
   describe "when name is too long" do
     before { @user.name = "a"*51 }
+    it { should_not be_valid }
+  end
+  
+  describe "when email is not present"  do
+    before { @user.email = " " }
     it { should_not be_valid }
   end
   
@@ -72,5 +60,38 @@ describe User do
     end
     
     it { should_not be_valid }
+  end
+  
+  describe "when password is not present" do
+    before do
+      @user.password = " "
+      @user.password_confirmation = " "
+    end
+    it { should_not be_valid }
+  end
+  
+  describe "whe password is too short" do
+    before { @user.password = @user.password_confirmation = "a" * 5 }
+    it { should_not be_valid }
+  end
+  
+  describe "when password does not match confirmation" do
+    before { @user.password_confirmation = "mismatch" }
+    it { should_not be_valid }
+  end
+  
+  describe "return value of authenticate method" do
+    before { @user.save }
+    let(:found_user) { User.find_by_email(@user.email) }
+    
+    describe "with valid password" do
+      it { should eq found_user.authenticate(@user.password) }
+    end
+    
+    describe "with invalid password" do
+      let(:user_for_invalid_password) { found_user.authenticate("invalid") }
+      it { should_not eq user_for_invalid_password }
+      it { expect(user_for_invalid_password).to be_false }
+    end
   end
 end
