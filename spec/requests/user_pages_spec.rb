@@ -54,10 +54,7 @@ describe "UserPages" do
   describe "edit" do
     let (:user) { FactoryGirl.create(:user) }
     before do
-      visit login_path
-      fill_in "Email",    with: user.email
-      fill_in "Password", with: user.password
-      click_button "Login"
+      login user
       visit edit_user_path(user)
     end
     
