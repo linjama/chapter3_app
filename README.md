@@ -1,5 +1,7 @@
-# Ruby on Rails Tutorial: Chapter 3 sample application
+# Ruby on Rails Tutorial
 
 This is the sample application for
 the [*Ruby on Rails Tutorial*](http://railstutorial.org/)
 by [Michael Hartl](http://michaelhartl.com/).
+
+Written by Matti Linjama according to the tutorial.
