@@ -20,7 +20,7 @@ describe "Authentication" do
       it { should have_title('Login') }
       it { should have_selector('div.alert.alert-error', text: 'Invalid') }
       
-      describe "aster visiting another page" do
+      describe "after visiting another page" do
         before { click_link "Home" }
         it { should_not have_selector('div.alert.alert-error') }
       end
@@ -96,6 +96,18 @@ describe "Authentication" do
       describe "submitting GET request to the users#edit action" do
         before { get edit_user_path(wrong_user) }
         specify { expect(response.body).not_to match(full_title('Edit user')) }
+        specify { expect(response).to redirect_to(root_url) }
+      end
+    end
+    
+    describe "as non-admin user" do
+      let(:user)  { FactoryGirl.create(:user) }
+      let(:non_admin) { FactoryGirl.create(:user) }
+      
+      before { login non_admin, no_capybara: true }
+      
+      describe "submitting a DELETE request to the User#destroy action" do
+        before { delete user_path(user) }
         specify { expect(response).to redirect_to(root_url) }
       end
     end
